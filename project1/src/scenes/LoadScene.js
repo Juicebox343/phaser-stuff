@@ -37,6 +37,8 @@ export class LoadScene extends Phaser.Scene{
             this.load.spritesheet(CST.CHARACTERS[prop], CST.CHARACTERS[prop], frameConfig);
         }
     }
+
+
     
 
     preload(){
@@ -52,6 +54,9 @@ export class LoadScene extends Phaser.Scene{
             frameHeight: 64,
             frameWidth: 64
         });
+
+      
+
         //loading bar
         let loadingBar = this.add.graphics({
             fillStyle: {

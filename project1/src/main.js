@@ -1,7 +1,5 @@
 import {LoadScene} from "./scenes/LoadScene.js";
 import {MenuScene} from "./scenes/MenuScene.js";
-import {IntroScene} from "./scenes/IntroScene.js";
-import {CharacterScene} from "./scenes/CharacterScene.js";
 import {World1Scene} from "./scenes/World1Scene.js";
 
 let config = {
@@ -15,7 +13,7 @@ let config = {
             debug: false
         }
     },
-    scene: [LoadScene, MenuScene, IntroScene, CharacterScene, World1Scene],
+    scene: [LoadScene, MenuScene, World1Scene],
     render: {
         pixelArt: true
     }

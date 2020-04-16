@@ -2,8 +2,6 @@ export const CST = {
     SCENES: {
         LOAD: "LOAD",
         MENU: "MENUS",
-        CHARACTER: "CHARACTER",
-        INTRO: "INTRO",
         WORLD1: "WORLD1"
     },
     IMAGE: {
