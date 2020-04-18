@@ -5,13 +5,7 @@ export class World1Scene extends Phaser.Scene{
         super({
             key: CST.SCENES.WORLD1
         })
-
         this.hero = undefined;
-        this.cursors = undefined;
-        this.speed = 85;
-        this.preVelocity = undefined;
-        this.facingDirection = "down";
-        this.isAttacking = false;
     }
 
     init(){
@@ -20,10 +14,7 @@ export class World1Scene extends Phaser.Scene{
     preload(){
 
       this.load.image('tiles', './dist/assets/images/homestead_spritesheet.png');
-      // this.load.image('trees', './dist/assets/images/tree2-final.png');
-
       this.load.atlas("heroAtlas", "./dist/assets/sprites/hero.png", "./dist/assets/sprites/hero.json");
-
       this.load.tilemapTiledJSON('map', './dist/assets/images/homestead_map.json');
     }
 
@@ -54,74 +45,70 @@ export class World1Scene extends Phaser.Scene{
     }
 
     update(time, delta){
-      let preVelocity = this.hero.body.prevVelocity = this.hero.body.velocity.clone();
-      
+      let moving = false;
+      this.hero.setVelocity(0);
 
-
-      this.hero.body.setVelocity(0);
-      
-      
-
-      if(this.keyboard.D.isDown === true){
-          this.hero.body.setVelocityX(this.speed);
-          this.hero.anims.play('right-walk', true);
-      } else if(this.keyboard.A.isDown === true){
-          this.hero.body.setVelocityX(-this.speed);
-          this.hero.anims.play('left-walk', true);
-      } else if(this.keyboard.W.isDown === true){
-          this.hero.body.setVelocityY(-this.speed);
-          this.hero.anims.play('up-walk', true);
-      } else if(this.keyboard.S.isDown === true){
-          this.hero.anims.play('down-walk', true);
-          this.hero.body.setVelocityY(this.speed);
-      } else if(this.keyboard.SPACE.isDown === true){
-        if (this.facingDirection === 'left') {
-          this.hero.anims.play('left-hack', this.attackThem());
-        }else if (this.facingDirection === 'right'){
-          this.hero.anims.play('right-hack');
-        } 
-        else if (this.facingDirection === 'up'){
-          this.hero.anims.play('up-hack');
-        } 
-        else if (this.facingDirection === 'down'){
-          this.hero.anims.play('down-hack');
-        }
-      }  else {
-          this.hero.anims.stop();
-          if (this.facingDirection === "left") this.hero.setTexture('heroAtlas', 'hero-6');
-          else if (this.facingDirection === "right") this.hero.setTexture('heroAtlas', 'hero-20');
-          else if (this.facingDirection === 'up') this.hero.setTexture('heroAtlas', 'hero-13');
-          else if (this.facingDirection === 'down') this.hero.setTexture('heroAtlas', 'hero-27');
-      }
-
-      this.hero.body.velocity.normalize().scale(this.speed);
-
-      if (preVelocity.x < 0) this.facingDirection = "left";
-      else if (preVelocity.x > 0) this.facingDirection = "right";
-      else if (preVelocity.y < 0) this.facingDirection = 'up';
-      else if (preVelocity.y > 0) this.facingDirection = 'down';   
+      if (!moving){
+        this.hero.anims.stop();
+        if (!this.hero.hacking){
+          if(this.keyboard.SPACE.isDown){
+            this.hero.hacking = true;
+            this.hero.anims.play(`${this.hero.direction}-hack`, true);
+            console.log(`${this.hero.direction}-hack`)
+            this.hero.once('animationcomplete', () => {
+              this.hero.anims.play(`${this.hero.direction}-walk`, true);
+              this.hero.hacking = false;
+            });
+          } else {
+            if(this.keyboard.D.isDown){
+              this.hero.setVelocityX(this.hero.speed);
+              this.hero.direction = "right";
+              moving = true;
+            } else if(this.keyboard.A.isDown){
+              this.hero.setVelocityX(-this.hero.speed);
+              this.hero.direction = "left";
+              moving = true;
+            } else if(this.keyboard.W.isDown){
+              this.hero.setVelocityY(-this.hero.speed);
+              this.hero.direction = "up";
+              moving = true;
+            } else if(this.keyboard.S.isDown){
+              this.hero.setVelocityY(this.hero.speed);
+              this.hero.direction = "down";
+              moving = true;
+            } 
+            if(!moving){
+              this.hero.anims.stop();
+              if (this.hero.direction === "left") this.hero.setTexture('heroAtlas', 'hero-6');
+              else if (this.hero.direction === "right") this.hero.setTexture('heroAtlas', 'hero-20');
+              else if (this.hero.direction === 'up') this.hero.setTexture('heroAtlas', 'hero-13');
+              else if (this.hero.direction === 'down') this.hero.setTexture('heroAtlas', 'hero-27');
+            } else {
+              console.log(`${this.hero.direction}-walk`)
+              this.hero.anims.play(`${this.hero.direction}-walk`, true);
+            }//else
+          }//else
+        }//if(!this.hero.hacking)
+      }//if (!moving)
     }
-
-    attackThem(){
-      
-    }
+    
 
     createHero(){
-
       this.hero = this.physics.add.sprite(this.game.config.width / 2, this.game.config.height / 2, 'heroAtlas', 'hero-27');
-
       this.hero.body.setSize(this.hero.body.width * 0.5, 32, this.hero.body.width * 0.5, 0);
 
-      // sprite.body.setSize(boundWidth, boundHeight, boundOffsetX, boundOffsetY);
+      this.hero.speed = 96;
+      this.hero.hacking = false;
+      this.hero.direction = "down";
 
-       this.anims.create({
+      this.anims.create({
         key: 'left-walk',
         frames: this.anims.generateFrameNames('heroAtlas', {
           prefix: 'hero-', 
           start: 0, 
           end: 5
         }),
-        frameRate: 6,
+        frameRate: 8,
         repeat: -1
       });
 
@@ -132,7 +119,7 @@ export class World1Scene extends Phaser.Scene{
           start: 7, 
           end: 12
         }),
-        frameRate: 6,
+        frameRate: 8,
         repeat: -1
       });
 
@@ -143,7 +130,7 @@ export class World1Scene extends Phaser.Scene{
           start: 14, 
           end: 19
         }),
-        frameRate: 6,
+        frameRate: 8,
         repeat: -1
       });
 
@@ -154,7 +141,7 @@ export class World1Scene extends Phaser.Scene{
           start: 21, 
           end: 26
         }),
-        frameRate: 6,
+        frameRate: 8,
         repeat: -1
       });
 
@@ -165,7 +152,8 @@ export class World1Scene extends Phaser.Scene{
           start: 28, 
           end: 30
         }),
-        frameRate: 6
+        frameRate: 8,
+        repeat: 0
       });
      
       this.anims.create({
@@ -175,7 +163,8 @@ export class World1Scene extends Phaser.Scene{
           start: 31, 
           end: 33
         }),
-        frameRate: 6
+        frameRate: 8,
+        repeat: 0
       });
 
       this.anims.create({
@@ -185,7 +174,8 @@ export class World1Scene extends Phaser.Scene{
           start: 34, 
           end: 36
         }),
-        frameRate: 6
+        frameRate: 8,
+        repeat: 0
       });
 
       this.anims.create({
@@ -195,7 +185,8 @@ export class World1Scene extends Phaser.Scene{
           start: 37, 
           end: 39
         }),
-        frameRate: 6
+        frameRate: 8,
+        repeat: 0
       });
     }
   }
