@@ -5,12 +5,12 @@ import {World1Scene} from "./scenes/World1Scene.js";
 let config = {
     type: Phaser.AUTO,
     width: 800,
-    height: 600,
+    height: 400,
     physics: {
         default: 'arcade',
         arcade: { 
             gravity: { y: 0},
-            debug: false
+            debug: true
         }
     },
     scene: [LoadScene, MenuScene, World1Scene],

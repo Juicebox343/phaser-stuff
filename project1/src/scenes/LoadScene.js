@@ -36,10 +36,7 @@ export class LoadScene extends Phaser.Scene{
         for(let prop in CST.CHARACTERS){
             this.load.spritesheet(CST.CHARACTERS[prop], CST.CHARACTERS[prop], frameConfig);
         }
-    }
-
-
-    
+    }    
 
     preload(){
 
@@ -68,7 +65,7 @@ export class LoadScene extends Phaser.Scene{
 
         this.load.on("progress", (percent) => {
             loadingBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * percent, 25);            
-            console.log(`loading: ${percent * 100}%`);
+            // console.log(`loading: ${percent * 100}%`);
         })
 
         this.load.on('complete', ()=>{
@@ -76,7 +73,7 @@ export class LoadScene extends Phaser.Scene{
         })
 
         this.load.on("load", (file) =>{
-            console.log(file.src);
+            // console.log(file.src);
         })
 
 

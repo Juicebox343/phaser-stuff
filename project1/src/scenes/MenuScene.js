@@ -38,7 +38,7 @@ export class MenuScene extends Phaser.Scene{
         this.bg2 = this.add.tileSprite(0, this.game.config.height - 195, this.game.config.width, 208, CST.IMAGE.MOUNT_BG).setOrigin(0,0);
         this.bg3 = this.add.tileSprite(0, this.game.config.height - 195, this.game.config.width, 208, CST.IMAGE.TREES_BG).setOrigin(0,0);
 
-        this.bird = this.add.sprite(-50, 445, CST.SPRITE.ROBIN);
+        this.bird = this.add.sprite(-50, 290, CST.SPRITE.ROBIN);
         
         this.anims.create({
             key: 'fly',
@@ -51,10 +51,10 @@ export class MenuScene extends Phaser.Scene{
         this.bird.anims.play('fly');
 
 
-        this.add.image(this.game.renderer.width / 2, 200, CST.IMAGE.TITLE);
-        let newButton = this.add.image(this.game.renderer.width / 2 - 100, 290, CST.IMAGE.NEW).setInteractive();
-        let resumeButton = this.add.image(this.game.renderer.width / 2 + 100, 290, CST.IMAGE.RESUME).setInteractive();
-        let optionsButton = this.add.image(this.game.renderer.width / 2, 330, CST.IMAGE.OPTIONS).setInteractive();
+        this.add.image(this.game.renderer.width / 2, 50, CST.IMAGE.TITLE);
+        let newButton = this.add.image(this.game.renderer.width / 2 - 100, 125, CST.IMAGE.NEW).setInteractive();
+        let resumeButton = this.add.image(this.game.renderer.width / 2 + 100, 125, CST.IMAGE.RESUME).setInteractive();
+        let optionsButton = this.add.image(this.game.renderer.width / 2, 150, CST.IMAGE.OPTIONS).setInteractive();
         newButton.name = "new";
         resumeButton.name = "resume";
         optionsButton.name = "options";

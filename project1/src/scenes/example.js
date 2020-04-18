@@ -193,7 +193,7 @@ function update(time, delta) {
     player.anims.stop();
 
     // If we were moving, pick and idle frame to use
-    if (prevVelocity.x < 0) player.setTexture("atlas", "misa-left");
+    if (prevVelocity.x < 0 ) player.setTexture("atlas", "misa-left");
     else if (prevVelocity.x > 0) player.setTexture("atlas", "misa-right");
     else if (prevVelocity.y < 0) player.setTexture("atlas", "misa-back");
     else if (prevVelocity.y > 0) player.setTexture("atlas", "misa-front");
