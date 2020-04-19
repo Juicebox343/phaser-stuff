@@ -16,6 +16,7 @@ export const CST = {
     },
     SPRITE: {
         ROBIN: "robin_fly.png"
+
     },
     CHARACTERS: {
         HERO: "hero.png"

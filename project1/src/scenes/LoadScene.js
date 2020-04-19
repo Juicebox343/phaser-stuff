@@ -40,7 +40,6 @@ export class LoadScene extends Phaser.Scene{
 
     preload(){
 
-
         this.loadImages();
         this.loadAudio();
         this.loadSprites({
@@ -48,8 +47,8 @@ export class LoadScene extends Phaser.Scene{
             frameWidth: 32
         });
         this.loadCharacters({
-            frameHeight: 64,
-            frameWidth: 64
+            frameHeight: 32,
+            frameWidth: 32
         });
 
       
