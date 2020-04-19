@@ -49,7 +49,6 @@ export class World1Scene extends Phaser.Scene{
       this.hero.setVelocity(0);
 
       if (!moving){
-        this.hero.anims.stop();
         if (!this.hero.hacking){
           if(this.keyboard.SPACE.isDown){
             this.hero.hacking = true;
@@ -95,7 +94,7 @@ export class World1Scene extends Phaser.Scene{
 
     createHero(){
       this.hero = this.physics.add.sprite(this.game.config.width / 2, this.game.config.height / 2, 'heroAtlas', 'hero-27');
-      this.hero.body.setSize(this.hero.body.width * 0.5, 32, this.hero.body.width * 0.5, 0);
+      this.hero.setSize(this.hero.width * 0.5, 56, this.hero.width * 0.5, -this.hero.width*2);
 
       this.hero.speed = 96;
       this.hero.hacking = false;
