@@ -83,22 +83,23 @@ export class MoveState extends State {
 
       hero.setVelocity(0);
       if (W.isDown) {
-        hero.setVelocityY(-100);
+        hero.setVelocityY(-hero.speed);
         hero.direction = 'up';
       } else if (S.isDown) {
-        hero.setVelocityY(100);
+        hero.setVelocityY(hero.speed);
         hero.direction = 'down';
       }
       if (A.isDown) {
-        hero.setVelocityX(-100);
+        hero.setVelocityX(-hero.speed);
         hero.direction = 'left';
       } else if (D.isDown) {
-        hero.setVelocityX(100);
+        hero.setVelocityX(hero.speed);
         hero.direction = 'right';
       }
       hero.anims.play(`${hero.direction}-walk`, true);
       hero.body.velocity.normalize().scale(hero.speed);
     }
+    
   }
       
 export class HackState extends State {

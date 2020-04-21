@@ -15,10 +15,12 @@ export class World1Scene extends Phaser.Scene{
     preload(){
 
       this.load.image('tiles', './dist/assets/images/homestead_spritesheet.png');
+      this.load.tilemapTiledJSON('map', './dist/assets/images/homestead_map.json');
       this.load.atlas("heroAtlas", "./dist/assets/sprites/hero.png", "./dist/assets/sprites/hero.json");
       this.load.atlas("veggieAtlas", "./dist/assets/sprites/veggies.png", "./dist/assets/sprites/veggies.json");
-      this.load.tilemapTiledJSON('map', './dist/assets/images/homestead_map.json');
-
+  
+     
+  
     }
 
     create(){
@@ -39,18 +41,18 @@ export class World1Scene extends Phaser.Scene{
       treeCrown1.setDepth(11);
       treeCrown2.setDepth(10);
 
+      const eggPlants = this.createEggplants(map.widthInPixels, map.heightInPixels);
       this.createHero()
       const camera = this.cameras.main;
       camera.startFollow(this.hero);
       camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
       this.physics.add.collider(this.hero, [treeBase1, treeBase2]);
-      this.eggplant = this.physics.add.sprite(this.game.config.width / 2 + 200, this.game.config.height / 2, 'veggieAtlas', 'Vegetables-10');
-      
+
+      this.physics.add.overlap(this.hero, eggPlants, this.collectStuff, null, this);
     }
 
     update(time, delta){
       this.stateMachine.step();
-      console.log(this.stateMachine.state)
     }
     
 
@@ -70,6 +72,7 @@ export class World1Scene extends Phaser.Scene{
       }, 
       [this, this.hero]);
 
+   
 
       this.anims.create({
         key: 'left-walk',
@@ -159,4 +162,23 @@ export class World1Scene extends Phaser.Scene{
         repeat: 0
       });
     }
+
+
+  createEggplants(width, height){
+    const eggPlants = this.physics.add.group({key: 'veggieAtlas', frame: 'Vegetables-10', repeat: 11})
+
+    eggPlants.children.iterate((child) => {
+      child.x = Phaser.Math.Between(0, width);
+      child.y = Phaser.Math.Between(0, height);
+    })
+    return eggPlants;
   }
+
+  collectStuff(hero, stuff){
+    stuff.disableBody(true, true)
+  }
+
+
+}
+
+  
