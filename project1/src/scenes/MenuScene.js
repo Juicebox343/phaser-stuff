@@ -71,6 +71,7 @@ export class MenuScene extends Phaser.Scene{
         })
             
         newButton.on('pointerup', () => {
+            this.sound.stopAll();
             this.scene.start(CST.SCENES.WORLD1);
         })
     }
