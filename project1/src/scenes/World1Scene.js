@@ -27,54 +27,35 @@ export class World1Scene extends Phaser.Scene{
     }
 
     create(){
-      const map = this.createWorld();    
-      const resources = this.createResources(map.widthInPixels, map.heightInPixels);
-
-
+      
       this.sound.play(CST.AUDIO.WORLD_MUSIC, {
         volume: 0.35,
         loop: true
       })
-
-      // const map = this.make.tilemap({ key: "map" });
-
-      // const tileset = map.addTilesetImage("homestead_spritesheet", "tiles")
-
-      //Parameters: layer name (or index) from Tiled, tileset, x, y
-      // const belowLayer = map.createStaticLayer("Grass", tileset, 0, 0);
-      // const treeBase1 = map.createStaticLayer("Bottom1", tileset, 0, 0);
-      // const treeBase2 = map.createStaticLayer("Bottom2", tileset, 0, 0);
-      // const treeCrown1 = map.createStaticLayer("Top1", tileset, 0, 0);
-      // const treeCrown2 = map.createStaticLayer("Top2", tileset, 0, 0);
-      
-      // treeBase1.setCollisionByProperty({ collides: true });
-      // treeBase2.setCollisionByProperty({ collides: true });
-
-      // treeCrown1.setDepth(11);
-      // treeCrown2.setDepth(10);
-
+      const map = this.createWorld();    
       const eggPlants = this.createEggplants(map.widthInPixels, map.heightInPixels);
+      const resources = this.createResources(map.widthInPixels, map.heightInPixels);
+     
+     
       this.createHero()
       const camera = this.cameras.main;
       camera.startFollow(this.hero);
       camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-      // this.physics.add.collider(this.hero, [treeBase1, treeBase2]);
 
       this.physics.add.overlap(this.hero, eggPlants, this.collectStuff, null, this);
-      // this.physics.add.overlap(this.hero, [treeBase1, treeBase2], this.breakDown, null, this);
+      this.physics.add.collider(this.hero, resources, this.collidedWithMe(resources), null, this);
+      console.log(resources)
     }
-
+   
     update(time, delta){
       this.stateMachine.step();
-      this.detectCollision(this.hero, this.children.list);
     }
     
     createHero(){
       
       this.hero = this.physics.add.sprite(this.game.config.width / 2, this.game.config.height / 2, 'heroAtlas', 'hero-27');
-      this.hero.setSize(this.hero.width * 0.5, 56, this.hero.width * 0.5, -this.hero.width*2);
-      this.keyboard = this.input.keyboard.addKeys('W, A, S, D, SPACE');
-      
+      this.hero.body.setSize(28, 46, true).setOffset(18, 19)
+      this.keyboard = this.input.keyboard.addKeys('W, A, S, D, SPACE');   
       this.hero.speed = 112;
 
       // The state machine managing the hero
@@ -172,7 +153,6 @@ export class World1Scene extends Phaser.Scene{
         frameRate: 8,
         repeat: 0
       });
-      console.log(this.children.list)
     }
 
   createEggplants(width, height){
@@ -188,10 +168,24 @@ export class World1Scene extends Phaser.Scene{
     stuff.disableBody(true, true)
   }
 
-  breakDown(hero, stuff){
+  collidedWithMe(data){
+    console.log(data)
+  }
 
+  breakDown(hero, stuff){
     console.log("tree")
   }
+
+
+
+
+
+
+
+
+
+
+
 
   createResources(width, height){
     const treeArray = [[0,0,0,0],
@@ -203,19 +197,22 @@ export class World1Scene extends Phaser.Scene{
     trees.children.iterate((child) => {
       child.x = Phaser.Math.Between(0, width);
       child.y = Phaser.Math.Between(0, height);
-      child.setSize(child.width * 0.5, 45, child.width * 0.5, 0);
       child.setDepth(child.y);
       child.name = 'tree';
+      child.body.setSize(58, 20).setOffset(32, 76);
+      child.setImmovable();
     })
+
     const rocks = this.physics.add.group({key: 'rock', repeat: 31})
     rocks.children.iterate((child) => {
       child.x = Phaser.Math.Between(0, width);
       child.y = Phaser.Math.Between(0, height);
-      child.setSize(child.width, 10, child.width * 0.5, 0);
       child.setDepth(child.y);
       child.name = 'rock';
+      child.body.setSize(32, 5).setOffset(2, 5);
+      child.setImmovable();
     })
-    return trees, rocks;
+    return [trees, rocks];
   }
 
   
@@ -229,18 +226,6 @@ export class World1Scene extends Phaser.Scene{
     const tiles = map.addTilesetImage('tiles');
     const groundLayer = map.createStaticLayer(0, tiles, 0, 0)
     return map;
-  }
-
-  detectCollision(hero, gameObjects){
-
-    gameObjects.forEach(function(object){
-      if (hero.x < object.x + object.width && 
-        hero.x + hero.width > object.x &&
-        hero.y < object.y + object.height &&
-        hero.y + hero.height > object.y) {
-      }
-    })
- 
   }
 
 }

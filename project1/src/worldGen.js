@@ -27,3 +27,5 @@ export class World extends Phaser.Tilemaps.Tilemap{
     }
     
 }
+
+
