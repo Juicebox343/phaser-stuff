@@ -32,19 +32,18 @@ export class World1Scene extends Phaser.Scene{
         volume: 0.35,
         loop: true
       })
-
       const map = this.createWorld();    
-      this.createEggplants(map.widthInPixels, map.heightInPixels);
-      this.createResources(map.widthInPixels, map.heightInPixels);
+      const eggPlants = this.createEggplants(map.widthInPixels, map.heightInPixels);
+      this.resources = this.createResources(map.widthInPixels, map.heightInPixels);
+
       this.createHero()
-
-
       const camera = this.cameras.main;
       camera.startFollow(this.hero);
       camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 
-      this.physics.add.overlap(this.hero, this.eggPlants, this.collectStuff, null, this);
-      this.physics.add.collider(this.hero, this.resources, this.collidedWithMe, null, this);
+      this.physics.add.overlap(this.hero, eggPlants, this.collectStuff, null, this);
+      this.physics.add.collider(this.resources, this.hero, this.collidedWithMe, null, this);
+
 
 
     }
@@ -52,6 +51,36 @@ export class World1Scene extends Phaser.Scene{
     update(time, delta){
       this.stateMachine.step();
     }
+
+
+
+
+
+
+
+    collectStuff(hero, stuff){
+      stuff.disableBody(true, true)
+    }
+  
+    collidedWithMe(data){
+      console.log(data)
+    }
+  
+    breakDown(hero, stuff){
+      console.log("tree")
+    }
+  
+  
+  
+
+
+
+
+
+
+
+
+
     
     createHero(){
       
@@ -158,52 +187,27 @@ export class World1Scene extends Phaser.Scene{
     }
 
   createEggplants(width, height){
-    this.eggPlants = this.physics.add.group({key: 'veggieAtlas', frame: 'Vegetables-10', repeat: 11})
-    this.eggPlants.children.iterate((child) => {
+    const eggPlants = this.physics.add.group({key: 'veggieAtlas', frame: 'Vegetables-10', repeat: 11})
+    eggPlants.children.iterate((child) => {
       child.x = Phaser.Math.Between(0, width);
       child.y = Phaser.Math.Between(0, height);
     })
-    // return eggPlants;
+    return eggPlants;
   }
 
-  collectStuff(hero, stuff){
-    stuff.disableBody(true, true)
-  }
-
-  collidedWithMe(data){
-    console.log(data)
-  }
-
-  breakDown(hero, stuff){
-    console.log("tree")
-  }
-
-  ///world generation stuff
 
 
 
-  //Create a ground layer
-  createWorld(){
-    const worldArray = [];
-    for(let i = 0; i <= 24; i++){
-        worldArray.push(Array.from({length: 50}, () => Math.floor(Math.random() * (24 - 16) + 16)))
-    }
-    this.map = this.make.tilemap({data: worldArray, tileWidth: 32, tileHeight: 32});
-    const tiles = map.addTilesetImage('tiles');
-    const groundLayer = map.createStaticLayer(0, tiles, 0, 0)
-    // const rockLayer = map.createDynamicLayer(1, rocks, 0, 0)
-    // const treeLayer = map.createDynamicLayer(2,)
-    // resources = map.createDynamicLayer(0)
-    return map;
-  }
-  //Add water layer
-  //Add stones
-  //Add trees
-  //Add plants
-  //Add animals
+
+
+
+
+
+
 
   createResources(width, height){
     const trees = this.physics.add.group({key: 'tree', repeat: 31})
+    trees.name = "trees";
     trees.children.iterate((child) => {
       child.x = Phaser.Math.Between(0, width);
       child.y = Phaser.Math.Between(0, height);
@@ -214,6 +218,7 @@ export class World1Scene extends Phaser.Scene{
     })
 
     const rocks = this.physics.add.group({key: 'rock', repeat: 31})
+    rocks.name = "rocks";
     rocks.children.iterate((child) => {
       child.x = Phaser.Math.Between(0, width);
       child.y = Phaser.Math.Between(0, height);
@@ -225,9 +230,18 @@ export class World1Scene extends Phaser.Scene{
     return [trees, rocks];
   }
 
-  
 
- 
+
+  createWorld(){
+    const worldArray = [];
+    for(let i = 0; i <= 24; i++){
+        worldArray.push(Array.from({length: 50}, () => Math.floor(Math.random() * (24 - 16) + 16)))
+    }
+    const map = this.make.tilemap({data: worldArray, tileWidth: 32, tileHeight: 32});
+    const tiles = map.addTilesetImage('tiles');
+    const groundLayer = map.createStaticLayer(0, tiles, 0, 0)
+    return map;
+  }
 
 }
 
