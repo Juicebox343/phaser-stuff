@@ -80,7 +80,6 @@ export class MoveState extends State {
         this.stateMachine.transition('idle');
         return;
       }
-
       hero.setVelocity(0);
       if (W.isDown) {
         hero.setVelocityY(-hero.speed);

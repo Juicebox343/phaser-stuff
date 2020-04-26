@@ -1,7 +1,7 @@
 import {CST} from "../CST.js";
 import {StateMachine, State, IdleState, MoveState, HackState} from "../stateMachine.js";
-import {World} from "../worldGen.js";
-import {Resource} from "../resourceManager.js";
+// import {World} from "../worldGen.js";
+// import {Resource} from "../resourceManager.js";
 
 export class World1Scene extends Phaser.Scene{
     constructor(){
@@ -27,16 +27,20 @@ export class World1Scene extends Phaser.Scene{
     }
 
     create(){
-      
       this.sound.play(CST.AUDIO.WORLD_MUSIC, {
         volume: 0.35,
         loop: true
       })
+      this.worldArray = [];
+      for(let i = 0; i <= 24; i++){
+          this.worldArray.push(Array.from({length: 50}, () => Math.floor(Math.random() * (24 - 16) + 16)))
+      }
       const map = this.createWorld();    
       const eggPlants = this.createEggplants(map.widthInPixels, map.heightInPixels);
       this.resources = this.createResources(map.widthInPixels, map.heightInPixels);
-
       this.createHero()
+      
+     
       const camera = this.cameras.main;
       camera.startFollow(this.hero);
       camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -50,6 +54,7 @@ export class World1Scene extends Phaser.Scene{
    
     update(time, delta){
       this.stateMachine.step();
+      this.hero.depth = this.hero.y;
     }
 
 
@@ -63,31 +68,19 @@ export class World1Scene extends Phaser.Scene{
     }
   
     collidedWithMe(data){
-      console.log(data)
     }
   
     breakDown(hero, stuff){
       console.log("tree")
     }
-  
-  
-  
 
-
-
-
-
-
-
-
-
-    
     createHero(){
       
       this.hero = this.physics.add.sprite(this.game.config.width / 2, this.game.config.height / 2, 'heroAtlas', 'hero-27');
       this.hero.body.setSize(28, 46, true).setOffset(18, 19)
       this.keyboard = this.input.keyboard.addKeys('W, A, S, D, SPACE');   
       this.hero.speed = 112;
+      
 
       // The state machine managing the hero
       this.stateMachine = new StateMachine('idle', {
@@ -211,7 +204,7 @@ export class World1Scene extends Phaser.Scene{
     trees.children.iterate((child) => {
       child.x = Phaser.Math.Between(0, width);
       child.y = Phaser.Math.Between(0, height);
-      child.setDepth(child.y);
+      child.setDepth(child.y + 30);
       child.name = 'tree';
       child.body.setSize(58, 20).setOffset(32, 76);
       child.setImmovable();
@@ -227,21 +220,18 @@ export class World1Scene extends Phaser.Scene{
       child.body.setSize(32, 5).setOffset(2, 5);
       child.setImmovable();
     })
+    console.log(this.worldArray)
     return [trees, rocks];
   }
 
 
 
   createWorld(){
-    const worldArray = [];
-    for(let i = 0; i <= 24; i++){
-        worldArray.push(Array.from({length: 50}, () => Math.floor(Math.random() * (24 - 16) + 16)))
-    }
-    const map = this.make.tilemap({data: worldArray, tileWidth: 32, tileHeight: 32});
+
+    const map = this.make.tilemap({data: this.worldArray, tileWidth: 32, tileHeight: 32});
     const tiles = map.addTilesetImage('tiles');
     const groundLayer = map.createStaticLayer(0, tiles, 0, 0)
     return map;
   }
 
 }
-
